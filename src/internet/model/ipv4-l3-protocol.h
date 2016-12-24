@@ -552,6 +552,7 @@ private:
   MapFragments_t       m_fragments; //!< Fragmented packets.
   Time                 m_fragmentExpirationTimeout; //!< Expiration timeout
   MapFragmentsTimers_t m_fragmentsTimers; //!< Expiration events.
+  bool                 m_useEcn;
 
 };
 

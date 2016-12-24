@@ -69,6 +69,10 @@ Ipv4L3Protocol::GetTypeId (void)
                    TimeValue (Seconds (30)),
                    MakeTimeAccessor (&Ipv4L3Protocol::m_fragmentExpirationTimeout),
                    MakeTimeChecker ())
+    .AddAttribute ("ECN", "Set true to use ECT codepoint by default",
+                   BooleanValue (false),
+                   MakeBooleanAccessor (&Ipv4L3Protocol::m_useEcn),
+                   MakeBooleanChecker ())
     .AddTraceSource ("Tx",
                      "Send ipv4 packet to outgoing interface.",
                      MakeTraceSourceAccessor (&Ipv4L3Protocol::m_txTrace),
@@ -883,7 +887,10 @@ Ipv4L3Protocol::BuildHeader (
   uint64_t dst = destination.Get ();
   uint64_t srcDst = dst | (src << 32);
   std::pair<uint64_t, uint8_t> key = std::make_pair (srcDst, protocol);
-
+  if (m_useEcn)
+    {
+      ipHeader.SetEcn (Ipv4Header::ECN_ECT0);
+    }
   if (mayFragment == true)
     {
       ipHeader.SetMayFragment ();
